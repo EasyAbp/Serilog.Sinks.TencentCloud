@@ -1,4 +1,4 @@
-# Serilog.Sinks.TencentClout
+# Serilog.Sinks.TencentCloud
 
 ## How to use it
 

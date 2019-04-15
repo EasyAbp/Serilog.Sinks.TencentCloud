@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>junfan.liu</Authors>
     <Company>yhd</Company>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
