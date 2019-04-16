@@ -1,4 +1,5 @@
-﻿using Serilog.Sinks.Http;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog.Sinks.Http;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,22 +10,18 @@ namespace Serilog.Sinks.TencentCloud
 {
     public class ClsHttpClient : IHttpClient
     {
-        private readonly HttpClient client;
+        private readonly IHttpClientFactory factory;
         private readonly Authorization authorization;
 
-        public ClsHttpClient() => client = new HttpClient();
-
-        public ClsHttpClient(Authorization authorization)
+        public ClsHttpClient(Authorization authorization, IHttpClientFactory httpClientFactory)
         {
             this.authorization = authorization;
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Clear();
-            
+            factory = httpClientFactory;
         }
-        public void Dispose() => client.Dispose();
-
+        
         public Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
         {
+            var client = factory.CreateClient();
             client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorization.GetAuthorizationString());
             return client.PostAsync(requestUri, content);
         }

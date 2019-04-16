@@ -68,7 +68,6 @@ namespace Serilog.Sinks.TencentCloud.Sinks.Http
 
             if (disposing)
             {
-                client?.Dispose();
                 client = null;
             }
         }

@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
     <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.*" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.*" />

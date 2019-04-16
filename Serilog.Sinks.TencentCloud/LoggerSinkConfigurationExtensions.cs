@@ -1,4 +1,5 @@
-﻿using Serilog.Configuration;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Sinks.Http;
 using Serilog.Sinks.TencentCloud;
@@ -6,6 +7,7 @@ using Serilog.Sinks.TencentCloud.Sinks.Http;
 using Serilog.Sinks.TencentCloud.Sinks.Http.BatchFormatters;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 
 namespace Serilog
@@ -47,13 +49,24 @@ namespace Serilog
             // Default values
             period = period ?? TimeSpan.FromSeconds(2);
             clsFormatter = clsFormatter ?? new ClsFormatter();
-            httpClient = httpClient ?? new ClsHttpClient(authorization);
+
+            var httpClientFactory = GetHttpClientFactory();
+            httpClient = httpClient ?? new ClsHttpClient(authorization, httpClientFactory);
 
             var sink = queueLimit != null
                 ? new TencentCloudSink($"http://{requestBaseUri}/structuredlog?topic_id={topicId}", batchPostingLimit, period.Value, queueLimit.Value, httpClient, clsFormatter)
                 : new TencentCloudSink($"http://{requestBaseUri}/structuredlog?topic_id={topicId}", batchPostingLimit, period.Value, httpClient, clsFormatter );
 
             return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
+        }
+
+        private static IHttpClientFactory GetHttpClientFactory()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddHttpClient();
+            var provider = serviceCollection.BuildServiceProvider();
+            var httpClientFactory = provider.GetService<IHttpClientFactory>();
+            return httpClientFactory;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Serilog.Sinks.TencentCloud
         /// <returns></returns>
         public string GetAuthorizationString()
         {
-            var timeStr = DateTime.Now.GetTencentCloudTimeStamp();
+            var timeStr = DateTimeOffset.Now.GetTencentCloudTimeStamp();
             var time = timeStr.Split(";");
             var nowStartTime = Convert.ToInt64(time[0]);
             if(lastEndTime > nowStartTime)

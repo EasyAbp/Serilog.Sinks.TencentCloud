@@ -19,13 +19,13 @@ namespace Serilog.Sinks.TencentCloud.Sinks.Http.BatchFormatters
             if (logEvents == null) throw new ArgumentNullException(nameof(logEvents));
 
             var logGroup = new global::TencentCloud.Cls.LogGroup();
-            
+
             foreach (var logEvent in logEvents)
             {
                 var log = new global::TencentCloud.Cls.Log();
                 try
                 {
-                    var contents =  GetLogEventContents(logEvent);
+                    var contents = GetLogEventContents(logEvent);
                     log.Contents.AddRange(contents);
                     log.Time = logEvent.Timestamp.ToUnixTimeMilliseconds();
                 }

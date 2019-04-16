@@ -8,7 +8,7 @@ namespace Serilog.Sinks.Http
     /// <summary>
     /// Interface responsible for posting HTTP requests.
     /// </summary>
-    public interface IHttpClient : IDisposable
+    public interface IHttpClient
     {
         /// <summary>
         /// Sends a POST request to the specified Uri as an asynchronous operation.
