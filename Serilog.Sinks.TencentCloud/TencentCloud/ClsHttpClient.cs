@@ -4,26 +4,27 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Serilog.Sinks.TencentCloud
 {
     public class ClsHttpClient : IHttpClient
     {
-        private readonly IHttpClientFactory factory;
         private readonly Authorization authorization;
+        private readonly HttpClient client;
 
-        public ClsHttpClient(Authorization authorization, IHttpClientFactory httpClientFactory)
+        public ClsHttpClient(Authorization authorization)
         {
             this.authorization = authorization;
-            factory = httpClientFactory;
+            client = new HttpClient();
         }
         
-        public Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
+        public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content, CancellationToken cancellationToken = default)
         {
-            var client = factory.CreateClient();
+            client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorization.GetAuthorizationString());
-            return client.PostAsync(requestUri, content);
+            return await client.PostAsync(requestUri, content, cancellationToken);
         }
     }
 }

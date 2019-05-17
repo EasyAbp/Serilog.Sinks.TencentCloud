@@ -50,23 +50,13 @@ namespace Serilog
             period = period ?? TimeSpan.FromSeconds(2);
             clsFormatter = clsFormatter ?? new ClsFormatter();
 
-            var httpClientFactory = GetHttpClientFactory();
-            httpClient = httpClient ?? new ClsHttpClient(authorization, httpClientFactory);
+            httpClient = httpClient ?? new ClsHttpClient(authorization);
 
             var sink = queueLimit != null
                 ? new TencentCloudSink($"http://{requestBaseUri}/structuredlog?topic_id={topicId}", batchPostingLimit, period.Value, queueLimit.Value, httpClient, clsFormatter)
                 : new TencentCloudSink($"http://{requestBaseUri}/structuredlog?topic_id={topicId}", batchPostingLimit, period.Value, httpClient, clsFormatter );
 
             return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
-        }
-
-        private static IHttpClientFactory GetHttpClientFactory()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddHttpClient();
-            var provider = serviceCollection.BuildServiceProvider();
-            var httpClientFactory = provider.GetService<IHttpClientFactory>();
-            return httpClientFactory;
         }
     }
 }

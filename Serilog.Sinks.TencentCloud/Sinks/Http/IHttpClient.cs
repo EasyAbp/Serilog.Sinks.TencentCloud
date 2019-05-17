@@ -1,6 +1,7 @@
 ﻿using Serilog.Sinks.TencentCloud;
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Serilog.Sinks.Http
@@ -16,6 +17,6 @@ namespace Serilog.Sinks.Http
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The HTTP request content sent to the server.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content);
+        Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content, CancellationToken cancellationToken = default);
     }
 }

@@ -46,8 +46,7 @@ namespace Serilog.Sinks.TencentCloud.Sinks.Http
             content.Headers.Clear();
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(ContentType);
             var result = await client
-                .PostAsync(requestUri, content)
-                .ConfigureAwait(false);
+                .PostAsync(requestUri, content);
 
             if (!result.IsSuccessStatusCode)
             {
