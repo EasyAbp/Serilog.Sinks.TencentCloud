@@ -2,13 +2,14 @@ name: publish to nuget
 on:
   push:
     branches:
-      - master # Default release branch
+      - master
+      - main
 jobs:
   publish:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: warrenbuckley/Setup-Nuget@v1
+      - uses: NuGet/setup-nuget@v1.0.5
 
       - name: read common.props
         id: commonProps
@@ -24,6 +25,9 @@ jobs:
           regex_flags: 'gim'
           search_string: '${{ steps.commonProps.outputs.content }}'
 
+      - name: dotnet restore
+        run: dotnet restore -s "https://api.nuget.org/v3/index.json"
+
       - name: dotnet build
         run: dotnet build -c Release
 
@@ -33,14 +37,19 @@ jobs:
       - name: remove unused packages
         run: |
           cd dest
-          del * -Exclude EasyAbp.*
+          del * -Exclude Serilog.Sinks.*
           del * -Exclude *.${{ steps.getVersion.outputs.first_match }}.nupkg
+          del *.HttpApi.Client.ConsoleTestApp*
+          del *.Host.Shared*
           dir -name
 
       - name: dotnet nuget push to GitHub
-        run: |
-          dotnet nuget add source https://nuget.pkg.github.com/EasyAbp/index.json -n github -u EasyAbp -p ${{secrets.GITHUB_TOKEN}} 
-          dotnet nuget push dest\*.nupkg -s "github" --skip-duplicate
+        uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+        with:
+          nupkg-path:  'dest\*.nupkg'
+          repo-owner:  'EasyAbp'
+          gh-user:  'EasyAbp'
+          token:  ${{ secrets.GITHUB_TOKEN }}
 
       - name: dotnet nuget push to NuGet
         run: dotnet nuget push dest\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
